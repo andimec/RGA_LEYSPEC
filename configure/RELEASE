@@ -1,0 +1,3 @@
+# Adjust these paths for the MUVACAS EPICS installation.
+EPICS_BASE=/opt/epics/base
+ASYN=/opt/epics/modules/asyn
