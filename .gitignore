@@ -1,0 +1,13 @@
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.pyc
+__pycache__/
+bin/
+lib/
+O.*
+*.swp
+.vscode/
+.idea/
