@@ -1,0 +1,50 @@
+record(bi, "$(P)CONNECTED") {
+    field(DESC, "RGA TCP connection")
+    field(ZNAM, "Disconnected")
+    field(ONAM, "Connected")
+}
+record(longin, "$(P)ERROR") { field(DESC, "RGA error condition") }
+record(stringin, "$(P)STATUS") { field(DESC, "RGA operating condition") }
+record(stringin, "$(P)VERSION") { field(DESC, "RGA firmware version") }
+record(mbbi, "$(P)FILAMENT") {
+    field(ZRVL, "0") field(ZRST, "Off") field(ONVL, "1") field(ONST, "Fil1")
+    field(TWVL, "2") field(TWST, "Fil2")
+}
+record(bo, "$(P)FILAMENT:CMD") { field(ZNAM, "Off") field(ONAM, "On") }
+record(mbbi, "$(P)DETECTOR") {
+    field(ZRVL, "0") field(ZRST, "SEM") field(ONVL, "1") field(ONST, "Faraday")
+}
+record(mbbo, "$(P)DETECTOR:CMD") {
+    field(ZRVL, "0") field(ZRST, "SEM") field(ONVL, "1") field(ONST, "Faraday")
+}
+record(mbbi, "$(P)MODE") {
+    field(ZRVL, "0") field(ZRST, "Scan") field(ONVL, "1") field(ONST, "Trend")
+    field(TWVL, "2") field(TWST, "Analog")
+}
+record(mbbo, "$(P)MODE:CMD") {
+    field(ZRVL, "0") field(ZRST, "Scan") field(ONVL, "1") field(ONST, "Trend")
+    field(TWVL, "2") field(TWST, "Analog")
+}
+record(longin, "$(P)MASS:FIRST") { field(DESC, "First mass") }
+record(longout, "$(P)MASS:FIRST:SET") { field(DESC, "First mass setpoint") }
+record(longin, "$(P)MASS:LAST") { field(DESC, "Last mass") }
+record(longout, "$(P)MASS:LAST:SET") { field(DESC, "Last mass setpoint") }
+record(mbbo, "$(P)SPEED:SET") {
+    field(ZRVL, "1") field(ZRST, "50 ms") field(ONVL, "2") field(ONST, "100 ms")
+    field(TWVL, "3") field(TWST, "200 ms") field(THVL, "4") field(THST, "500 ms")
+    field(FRVL, "5") field(FRST, "1000 ms") field(FVVL, "6") field(FVST, "2000 ms")
+}
+record(bo, "$(P)MEASUREMENT:START") { field(ZNAM, "Stop") field(ONAM, "Start") }
+record(bo, "$(P)MEASUREMENT:STOP") { field(ZNAM, "No") field(ONAM, "Stop") }
+record(bi, "$(P)MEASURING") { field(ZNAM, "Stopped") field(ONAM, "Measuring") }
+record(ai, "$(P)PRESSURE:TOTAL") {
+    field(EGU, "mbar") field(PREC, "6")
+}
+record(waveform, "$(P)SPECTRUM") {
+    field(FTVL, "DOUBLE") field(NELM, "300")
+}
+record(waveform, "$(P)MASS:AXIS") {
+    field(FTVL, "DOUBLE") field(NELM, "300")
+}
+record(longin, "$(P)COMM:COUNT") { field(DESC, "Protocol transactions") }
+record(longin, "$(P)COMM:ERROR") { field(DESC, "Communication errors") }
