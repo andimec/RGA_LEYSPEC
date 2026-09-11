@@ -9,5 +9,6 @@ bin/
 lib/
 O.*
 *.swp
+test_protocol
 .vscode/
 .idea/
