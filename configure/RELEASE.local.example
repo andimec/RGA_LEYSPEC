@@ -1,0 +1,4 @@
+# Copy this file to configure/RELEASE.local for a local deployment.
+#
+# EPICS_BASE=/path/to/epics/base
+# ASYN=/path/to/epics/modules/asyn
