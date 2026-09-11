@@ -1,1 +1,2 @@
-# Standard EPICS module configuration.
+# Standard EPICS application configuration entry point.
+include $(EPICS_BASE)/cfg/CONFIG
