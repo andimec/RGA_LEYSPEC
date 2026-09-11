@@ -1,9 +1,8 @@
-#!../../bin/${EPICS_HOST_ARCH}/leyrgaIoc
+#!../../bin/linux-x86_64/leyrgaIoc
 
 < envPaths
 
-# Generic deployment macros. Override these from the environment or copy this
-# startup file into the target project's IOC repository.
+# Generic deployment macros. Override these for the target project.
 epicsEnvSet("RGA_PREFIX", "RGA01:")
 epicsEnvSet("RGA_IP", "127.0.0.1")
 epicsEnvSet("RGA_ADDRESS", "1")
