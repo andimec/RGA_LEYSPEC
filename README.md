@@ -26,8 +26,6 @@ LEYSPEC EPICS/asyn driver
 Phoebus or another EPICS client
 ```
 
-Phoebus display files are deliberately not part of V1. They will be added in the next development step.
-
 ## V1 functionality
 
 ### 1. Protocol layer
@@ -84,7 +82,7 @@ The database uses the macro `P` for the project/device prefix. Example deploymen
 
 ```text
 MUVACAS:RGA01:
-LIPAC:RGA01:
+LIPAc:RGA01:
 IFMIF:DONES:RGA01:
 ```
 
@@ -131,6 +129,20 @@ $(P)MASS:AXIS
 $(P)COMM:COUNT
 $(P)COMM:ERROR
 ```
+
+## Phoebus OPI V0.1
+
+The first diagnostic Phoebus Display Builder screen is now included under `opi/leyrga/`:
+
+```text
+opi/leyrga/leyrga_diagnostics_v0.1.bob
+```
+
+The display is intentionally generic and uses the same `P` macro as the EPICS database. It provides a read-only diagnostic view of communication, instrument configuration, measurement state, pressure, analog inputs, source/detector state, errors, and the mass spectrum. Advanced operator controls are intentionally deferred until the driver and diagnostic display have been validated with the simulator and the real instrument.
+
+See `opi/leyrga/README.md` for the display deployment notes.
+
+Phoebus supports simple `$(macro)` expansion in display files, which allows the same display resource to be reused for different project/device prefixes. citeturn0search0turn1search2
 
 ## Building
 
@@ -203,4 +215,4 @@ V1 covers steps 1 to 6 of the development plan:
 5. Generic IOC configuration.
 6. Simulator and end-to-end IOC test infrastructure.
 
-Phoebus OPI development is the next step and is intentionally outside V1.
+V0.1 Phoebus diagnostic OPI is now included. The next stage will validate the OPI with the simulator and then with the physical LEYSPEC before adding operational controls and a more complete operator interface.
