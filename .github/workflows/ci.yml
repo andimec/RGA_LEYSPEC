@@ -1,0 +1,38 @@
+name: RGA_LEYSPEC V1 CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build EPICS Base
+        run: |
+          git clone --depth 1 https://github.com/epics-base/epics-base.git "$RUNNER_TEMP/epics-base"
+          make -C "$RUNNER_TEMP/epics-base" -j2
+
+      - name: Build asyn
+        run: |
+          git clone --depth 1 https://github.com/epics-modules/asyn.git "$RUNNER_TEMP/asyn"
+          printf 'EPICS_BASE=%s\n' "$RUNNER_TEMP/epics-base" > "$RUNNER_TEMP/asyn/configure/RELEASE.local"
+          make -C "$RUNNER_TEMP/asyn" -j2
+
+      - name: Configure project dependencies
+        run: |
+          printf 'EPICS_BASE=%s\nASYN=%s\n' "$RUNNER_TEMP/epics-base" "$RUNNER_TEMP/asyn" > configure/RELEASE.local
+
+      - name: Build RGA_LEYSPEC
+        run: make -j2
+
+      - name: Run protocol unit test
+        run: |
+          g++ -std=c++11 -IleyrgaApp/src test/test_protocol.cpp leyrgaApp/src/LeyboldProtocol.cpp -o test_protocol
+          ./test_protocol
+
+      - name: Python syntax checks
+        run: python3 -m py_compile test/leyrga_sim.py test/leyrga_client.py
