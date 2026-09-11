@@ -1,50 +1,253 @@
+# Generic LEYSPEC view-series RGA database.
+# Required macros:
+#   P    EPICS record prefix, e.g. RGA01:
+#   PORT asyn port name, e.g. RGA_TCP
+#   ADDR asyn address, normally 0
+
 record(bi, "$(P)CONNECTED") {
     field(DESC, "RGA TCP connection")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))CONNECTED")
     field(ZNAM, "Disconnected")
     field(ONAM, "Connected")
+    field(SCAN, "I/O Intr")
 }
-record(longin, "$(P)ERROR") { field(DESC, "RGA error condition") }
-record(stringin, "$(P)STATUS") { field(DESC, "RGA operating condition") }
-record(stringin, "$(P)VERSION") { field(DESC, "RGA firmware version") }
+
+record(bi, "$(P)ERROR") {
+    field(DESC, "RGA instrument/protocol error")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))ERROR")
+    field(ZNAM, "OK")
+    field(ONAM, "Error")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)ERROR:CODE") {
+    field(DESC, "Last Leybold protocol error code")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))ERROR:CODE")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)ERROR:RAW") {
+    field(DESC, "Last error or ES response")
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),$(ADDR))ERROR:RAW")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)STATUS") {
+    field(DESC, "Leybold DS operating condition")
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),$(ADDR))STATUS")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)VERSION") {
+    field(DESC, "RGA firmware version")
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),$(ADDR))VERSION")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)MODEL") {
+    field(DESC, "RGA model family")
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),$(ADDR))MODEL")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)MASS:RANGE") {
+    field(DESC, "Configured RGA maximum mass")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))MASS:RANGE")
+    field(SCAN, "I/O Intr")
+}
+
 record(mbbi, "$(P)FILAMENT") {
-    field(ZRVL, "0") field(ZRST, "Off") field(ONVL, "1") field(ONST, "Fil1")
-    field(TWVL, "2") field(TWST, "Fil2")
+    field(DESC, "Filament readback")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))FILAMENT")
+    field(ZRVL, "0") field(ZRST, "Off")
+    field(ONVL, "1") field(ONST, "Filament 1")
+    field(TWVL, "2") field(TWST, "Filament 2")
+    field(SCAN, "I/O Intr")
 }
-record(bo, "$(P)FILAMENT:CMD") { field(ZNAM, "Off") field(ONAM, "On") }
+
+record(bo, "$(P)FILAMENT:CMD") {
+    field(DESC, "Filament on/off command")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))FILAMENT:CMD")
+    field(ZNAM, "Off") field(ONAM, "On")
+}
+
+record(mbbo, "$(P)FILAMENT:SELECT") {
+    field(DESC, "Select filament while off")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))FILAMENT:SELECT")
+    field(ZRVL, "1") field(ZRST, "Filament 1")
+    field(ONVL, "2") field(ONST, "Filament 2")
+}
+
 record(mbbi, "$(P)DETECTOR") {
-    field(ZRVL, "0") field(ZRST, "SEM") field(ONVL, "1") field(ONST, "Faraday")
+    field(DESC, "Detector readback")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))DETECTOR")
+    field(ZRVL, "0") field(ZRST, "SEM")
+    field(ONVL, "1") field(ONST, "Faraday cup")
+    field(SCAN, "I/O Intr")
 }
+
 record(mbbo, "$(P)DETECTOR:CMD") {
-    field(ZRVL, "0") field(ZRST, "SEM") field(ONVL, "1") field(ONST, "Faraday")
+    field(DESC, "Detector selection command")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))DETECTOR:CMD")
+    field(ZRVL, "0") field(ZRST, "SEM")
+    field(ONVL, "1") field(ONST, "Faraday cup")
 }
+
 record(mbbi, "$(P)MODE") {
-    field(ZRVL, "0") field(ZRST, "Scan") field(ONVL, "1") field(ONST, "Trend")
+    field(DESC, "Measurement mode readback")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))MODE")
+    field(ZRVL, "0") field(ZRST, "Scan")
+    field(ONVL, "1") field(ONST, "Trend")
     field(TWVL, "2") field(TWST, "Analog")
+    field(SCAN, "I/O Intr")
 }
+
 record(mbbo, "$(P)MODE:CMD") {
-    field(ZRVL, "0") field(ZRST, "Scan") field(ONVL, "1") field(ONST, "Trend")
+    field(DESC, "Measurement mode command")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))MODE:CMD")
+    field(ZRVL, "0") field(ZRST, "Scan")
+    field(ONVL, "1") field(ONST, "Trend")
     field(TWVL, "2") field(TWST, "Analog")
 }
-record(longin, "$(P)MASS:FIRST") { field(DESC, "First mass") }
-record(longout, "$(P)MASS:FIRST:SET") { field(DESC, "First mass setpoint") }
-record(longin, "$(P)MASS:LAST") { field(DESC, "Last mass") }
-record(longout, "$(P)MASS:LAST:SET") { field(DESC, "Last mass setpoint") }
+
+record(longin, "$(P)MASS:FIRST") {
+    field(DESC, "First mass readback")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))MASS:FIRST")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)MASS:FIRST:SET") {
+    field(DESC, "First mass command")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))MASS:FIRST:SET")
+}
+
+record(longin, "$(P)MASS:LAST") {
+    field(DESC, "Last mass readback")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))MASS:LAST")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)MASS:LAST:SET") {
+    field(DESC, "Last mass command")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))MASS:LAST:SET")
+}
+
 record(mbbo, "$(P)SPEED:SET") {
-    field(ZRVL, "1") field(ZRST, "50 ms") field(ONVL, "2") field(ONST, "100 ms")
-    field(TWVL, "3") field(TWST, "200 ms") field(THVL, "4") field(THST, "500 ms")
-    field(FRVL, "5") field(FRST, "1000 ms") field(FVVL, "6") field(FVST, "2000 ms")
+    field(DESC, "Measurement speed")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))SPEED:SET")
+    field(ZRVL, "1") field(ZRST, "50 ms/mass")
+    field(ONVL, "2") field(ONST, "100 ms/mass")
+    field(TWVL, "3") field(TWST, "200 ms/mass")
+    field(THVL, "4") field(THST, "500 ms/mass")
+    field(FRVL, "5") field(FRST, "1000 ms/mass")
+    field(FVVL, "6") field(FVST, "2000 ms/mass")
 }
-record(bo, "$(P)MEASUREMENT:START") { field(ZNAM, "Stop") field(ONAM, "Start") }
-record(bo, "$(P)MEASUREMENT:STOP") { field(ZNAM, "No") field(ONAM, "Stop") }
-record(bi, "$(P)MEASURING") { field(ZNAM, "Stopped") field(ONAM, "Measuring") }
+
+record(bo, "$(P)MEASUREMENT:START") {
+    field(DESC, "Start measurement")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))MEASUREMENT:START")
+    field(ZNAM, "No") field(ONAM, "Start")
+}
+
+record(bo, "$(P)MEASUREMENT:STOP") {
+    field(DESC, "Stop measurement")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR))MEASUREMENT:STOP")
+    field(ZNAM, "No") field(ONAM, "Stop")
+}
+
+record(bi, "$(P)MEASURING") {
+    field(DESC, "Measurement state")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))MEASURING")
+    field(ZNAM, "Stopped") field(ONAM, "Measuring")
+    field(SCAN, "I/O Intr")
+}
+
 record(ai, "$(P)PRESSURE:TOTAL") {
-    field(EGU, "mbar") field(PREC, "6")
+    field(DESC, "Total pressure reported by RGA")
+    field(DTYP, "asynFloat64")
+    field(INP, "@asyn($(PORT),$(ADDR))PRESSURE:TOTAL")
+    field(EGU, "mbar")
+    field(PREC, "6")
+    field(SCAN, "I/O Intr")
 }
+
+record(bi, "$(P)PRESSURE:SETPOINT:STATUS") {
+    field(DESC, "Total pressure setpoint status")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))PRESSURE:SETPOINT:STATUS")
+    field(ZNAM, "Under") field(ONAM, "Over")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)ANALOG:INPUT1") {
+    field(DESC, "RGA analog input 1")
+    field(DTYP, "asynFloat64")
+    field(INP, "@asyn($(PORT),$(ADDR))ANALOG:INPUT1")
+    field(EGU, "V")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)ANALOG:INPUT2") {
+    field(DESC, "RGA analog input 2")
+    field(DTYP, "asynFloat64")
+    field(INP, "@asyn($(PORT),$(ADDR))ANALOG:INPUT2")
+    field(EGU, "V")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)SPECTRUM") {
-    field(FTVL, "DOUBLE") field(NELM, "300")
+    field(DESC, "RGA spectrum")
+    field(DTYP, "asynFloat64ArrayIn")
+    field(INP, "@asyn($(PORT),$(ADDR))SPECTRUM")
+    field(FTVL, "DOUBLE")
+    field(NELM, "300")
+    field(SCAN, "I/O Intr")
 }
+
 record(waveform, "$(P)MASS:AXIS") {
-    field(FTVL, "DOUBLE") field(NELM, "300")
+    field(DESC, "RGA mass axis")
+    field(DTYP, "asynFloat64ArrayIn")
+    field(INP, "@asyn($(PORT),$(ADDR))MASS:AXIS")
+    field(FTVL, "DOUBLE")
+    field(NELM, "300")
+    field(SCAN, "I/O Intr")
 }
-record(longin, "$(P)COMM:COUNT") { field(DESC, "Protocol transactions") }
-record(longin, "$(P)COMM:ERROR") { field(DESC, "Communication errors") }
+
+record(longin, "$(P)COMM:COUNT") {
+    field(DESC, "Protocol transactions")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))COMM:COUNT")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)COMM:ERROR") {
+    field(DESC, "Communication errors")
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR))COMM:ERROR")
+    field(SCAN, "I/O Intr")
+}
