@@ -1,3 +1,6 @@
-# Adjust these paths for the MUVACAS EPICS installation.
-EPICS_BASE=/opt/epics/base
+# External EPICS modules. Override these paths in configure/RELEASE.local
+# when deploying the driver in another control-system project.
 ASYN=/opt/epics/modules/asyn
+EPICS_BASE=/opt/epics/base
+
+-include $(TOP)/configure/RELEASE.local
