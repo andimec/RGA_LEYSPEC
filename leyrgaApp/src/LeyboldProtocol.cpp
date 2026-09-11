@@ -98,8 +98,8 @@ bool Protocol::parseResponse(const std::string& frame, Response& response)
     if (control == 0x06 || control == 0x15) {
         response.ack = (control == 0x06);
         response.command.assign(1, static_cast<char>(control));
-        if (data.size() >= 6) {
-            response.parameter = data.substr(4, 2);
+        if (body.size() >= 6) {
+            response.parameter = body.substr(4, 2);
             parseInt(response.parameter, response.errorCode);
         }
         return true;
@@ -137,11 +137,11 @@ bool Protocol::parseDd(const Response& response, int mode, int firstMass, int la
 
     if (mode == 2) {
         // Analog mode: 20 pairs of DAC value and measurement, followed by ERR and TP_SET.
-        if (fields.size() != 42 && fields.size() != 43) return false;
+        if (fields.size() != 42) return false;
         const std::size_t statusIndex = fields.size() - 2;
         if (!parseInt(fields[statusIndex], data.errorFlag)) return false;
         if (!parseInt(fields[statusIndex + 1], data.tpSet)) return false;
-        for (std::size_t i = 0; i + 1 < statusIndex; i += 2) {
+        for (std::size_t i = 0; i < statusIndex; i += 2) {
             int dac = 0;
             double value = 0.0;
             if (!parseInt(fields[i], dac) || !parseScientific(fields[i + 1], value)) return false;
@@ -172,9 +172,8 @@ bool Protocol::parseDd(const Response& response, int mode, int firstMass, int la
         for (int mass = firstMass; mass <= lastMass && data.axis.size() < data.values.size(); ++mass)
             data.axis.push_back(static_cast<double>(mass));
     } else if (mode == 1) {
-        for (std::size_t i = 0; i < data.values.size(); ++i) {
+        for (std::size_t i = 0; i < data.values.size(); ++i)
             data.axis.push_back(i < trendMasses.size() ? trendMasses[i] : 0.0);
-        }
     }
 
     data.valid = !data.values.empty() && data.axis.size() == data.values.size();
