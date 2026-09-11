@@ -142,7 +142,7 @@ The display is intentionally generic and uses the same `P` macro as the EPICS da
 
 See `opi/leyrga/README.md` for the display deployment notes.
 
-Phoebus supports simple `$(macro)` expansion in display files, which allows the same display resource to be reused for different project/device prefixes. citeturn0search0turn1search2
+Phoebus supports simple `$(macro)` expansion in display files, so the same display resource can be reused for different project/device prefixes.
 
 ## Building
 
