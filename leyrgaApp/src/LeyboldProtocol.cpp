@@ -18,6 +18,17 @@ static std::string trim(const std::string& in)
     return in.substr(first, last - first);
 }
 
+static bool parseInt(const std::string& text, int& value)
+{
+    const std::string v = trim(text);
+    if (v.empty()) return false;
+    char* end = nullptr;
+    long n = std::strtol(v.c_str(), &end, 10);
+    if (end == v.c_str() || *end != '\0') return false;
+    value = static_cast<int>(n);
+    return true;
+}
+
 std::string Protocol::makeCommand(int address, const std::string& command,
                                   const std::string& parameter)
 {
@@ -54,10 +65,17 @@ bool Protocol::parseResponse(const std::string& frame, Response& response)
         return false;
     }
 
-    response.address = std::atoi(data.substr(1, 2).c_str());
-    std::string body = data.substr(0, data.size() - 4);
-    std::string suppliedChecksum = data.substr(data.size() - 4);
-    bool checksumHex = suppliedChecksum.size() == 4 &&
+    int address = 0;
+    if (!parseInt(data.substr(1, 2), address) || address < 1 || address > 16) {
+        response.error = "Invalid RGA address";
+        return false;
+    }
+    response.address = address;
+
+    const std::size_t checksumPos = data.size() - 4;
+    const std::string body = data.substr(0, checksumPos);
+    const std::string suppliedChecksum = data.substr(checksumPos);
+    const bool checksumHex = suppliedChecksum.size() == 4 &&
         std::all_of(suppliedChecksum.begin(), suppliedChecksum.end(), [](unsigned char c) {
             return std::isxdigit(c) != 0;
         });
@@ -66,8 +84,9 @@ bool Protocol::parseResponse(const std::string& frame, Response& response)
         return false;
     }
 
-    unsigned int expected = checksum(body);
-    unsigned int supplied = static_cast<unsigned int>(std::strtoul(suppliedChecksum.c_str(), nullptr, 16));
+    const unsigned int expected = checksum(body);
+    const unsigned int supplied = static_cast<unsigned int>(
+        std::strtoul(suppliedChecksum.c_str(), nullptr, 16));
     if (expected != supplied) {
         response.error = "Checksum mismatch";
         return false;
@@ -81,7 +100,7 @@ bool Protocol::parseResponse(const std::string& frame, Response& response)
         response.command.assign(1, static_cast<char>(control));
         if (data.size() >= 6) {
             response.parameter = data.substr(4, 2);
-            response.errorCode = std::atoi(response.parameter.c_str());
+            parseInt(response.parameter, response.errorCode);
         }
         return true;
     }
@@ -98,20 +117,17 @@ bool Protocol::parseResponse(const std::string& frame, Response& response)
 
 bool Protocol::parseScientific(const std::string& value, double& result)
 {
-    std::string v = trim(value);
+    const std::string v = trim(value);
     if (v.empty()) return false;
     char* end = nullptr;
     result = std::strtod(v.c_str(), &end);
     return end != v.c_str() && *end == '\0' && std::isfinite(result);
 }
 
-bool Protocol::parseDd(const Response& response, std::vector<double>& spectrum,
-                       double& totalPressure, int& errorFlag, int& tpSet)
+bool Protocol::parseDd(const Response& response, int mode, int firstMass, int lastMass,
+                       const std::vector<double>& trendMasses, DdData& data)
 {
-    spectrum.clear();
-    totalPressure = 0.0;
-    errorFlag = 0;
-    tpSet = 0;
+    data = DdData();
     if (!response.valid || response.command != "DD") return false;
 
     std::vector<std::string> fields;
@@ -119,19 +135,50 @@ bool Protocol::parseDd(const Response& response, std::vector<double>& spectrum,
     std::stringstream ss(response.parameter);
     while (std::getline(ss, token, ',')) fields.push_back(trim(token));
 
-    // Scan/trend response: Ch1..ChN, TP, AN1, AN2, ERR, TP_SET.
+    if (mode == 2) {
+        // Analog mode: 20 pairs of DAC value and measurement, followed by ERR and TP_SET.
+        if (fields.size() != 42 && fields.size() != 43) return false;
+        const std::size_t statusIndex = fields.size() - 2;
+        if (!parseInt(fields[statusIndex], data.errorFlag)) return false;
+        if (!parseInt(fields[statusIndex + 1], data.tpSet)) return false;
+        for (std::size_t i = 0; i + 1 < statusIndex; i += 2) {
+            int dac = 0;
+            double value = 0.0;
+            if (!parseInt(fields[i], dac) || !parseScientific(fields[i + 1], value)) return false;
+            data.axis.push_back(static_cast<double>(dac) / 20.0);
+            data.values.push_back(value);
+        }
+        data.valid = data.values.size() == 20;
+        return data.valid;
+    }
+
+    // Scan and Trend mode: Ch1..ChN, TP, AN1, AN2, ERR, TP_SET.
     if (fields.size() < 6) return false;
     const std::size_t tpIndex = fields.size() - 5;
-    if (!parseScientific(fields[tpIndex], totalPressure)) return false;
-    tpSet = std::atoi(fields[fields.size() - 1].c_str());
-    errorFlag = std::atoi(fields[fields.size() - 2].c_str());
+    if (!parseScientific(fields[tpIndex], data.totalPressure)) return false;
+    if (!parseScientific(fields[tpIndex + 1], data.analog1)) return false;
+    if (!parseScientific(fields[tpIndex + 2], data.analog2)) return false;
+    if (!parseInt(fields[tpIndex + 3], data.errorFlag)) return false;
+    if (!parseInt(fields[tpIndex + 4], data.tpSet)) return false;
 
     for (std::size_t i = 0; i < tpIndex; ++i) {
-        double x = 0.0;
-        if (!parseScientific(fields[i], x)) return false;
-        spectrum.push_back(x);
+        double value = 0.0;
+        if (!parseScientific(fields[i], value)) return false;
+        data.values.push_back(value);
     }
-    return !spectrum.empty();
+
+    if (mode == 0) {
+        if (firstMass < 1 || lastMass < firstMass) return false;
+        for (int mass = firstMass; mass <= lastMass && data.axis.size() < data.values.size(); ++mass)
+            data.axis.push_back(static_cast<double>(mass));
+    } else if (mode == 1) {
+        for (std::size_t i = 0; i < data.values.size(); ++i) {
+            data.axis.push_back(i < trendMasses.size() ? trendMasses[i] : 0.0);
+        }
+    }
+
+    data.valid = !data.values.empty() && data.axis.size() == data.values.size();
+    return data.valid;
 }
 
 } // namespace leyrga
