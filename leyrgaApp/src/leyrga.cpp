@@ -45,7 +45,6 @@ private:
     void setConnected(bool connected);
     void setCommError(const std::string& message);
     void publishData(const DdData& data);
-    void parseTrendMasses(const char* csv);
 
     int address_;
     std::string ioPortName_;
@@ -326,14 +325,13 @@ bool Driver::initialise()
 {
     if (!commandAck("CN")) return false;
     if (!commandAck("CM", "2")) return false;
-    // Keep the EPICS readback in mbar. The Leybold protocol supports UC=2 for mbar.
     if (!commandAck("UC", "2")) return false;
     if (!configureMode(mode_)) return false;
     if (!configureMassRange()) return false;
 
     Response r;
     if (transact("CS", "", r) && r.command == "CS" && r.parameter.size() >= 5) {
-        int massRange = (r.parameter[1] - '0') * 100;
+        const int massRange = (r.parameter[1] - '0') * 100;
         setIntegerParam(P_MassRange, massRange);
         setStringParam(P_Model, "LEYSPEC view series");
     }
@@ -423,15 +421,13 @@ void Driver::pollTask()
         ++pollCounter_;
         if ((pollCounter_ % 10) == 0) updateStatus();
 
-        if (getIntegerParam(P_Measuring)) updateData();
+        int measuring = 0;
+        getIntegerParam(P_Measuring, &measuring);
+        if (measuring) updateData();
+
         callParamCallbacks();
         epicsThreadSleep(0.5);
     }
-}
-
-void Driver::parseTrendMasses(const char* csv)
-{
-    trendMasses_ = parseCsv(csv);
 }
 
 asynStatus Driver::writeInt32(asynUser* pasynUser, epicsInt32 value)
@@ -445,7 +441,6 @@ asynStatus Driver::writeInt32(asynUser* pasynUser, epicsInt32 value)
         if (value != 1 && value != 2) status = asynError;
         else status = commandAck(value == 1 ? "FA" : "FB") ? asynSuccess : asynError;
     } else if (function == P_DetectorCmd) {
-        // 0 = SEM, 1 = Faraday cup.
         status = commandAck(value ? "SF" : "SS") ? asynSuccess : asynError;
     } else if (function == P_ModeCmd) {
         status = configureMode(value) ? asynSuccess : asynError;
