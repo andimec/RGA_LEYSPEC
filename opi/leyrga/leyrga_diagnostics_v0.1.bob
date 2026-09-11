@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>LEYSPEC RGA Diagnostics V0.1</name>
+  <width>1200</width>
+  <height>850</height>
+
+  <widget type="label" version="2.0.0">
+    <name>Title</name>
+    <text>LEYSPEC RGA - DIAGNOSTICS V0.1</text>
+    <x>25</x><y>15</y><width>700</width><height>32</height>
+    <font><font family="Liberation Sans" style="BOLD" size="24.0"/></font>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Prefix</name>
+    <text>PV prefix: $(P)</text>
+    <x>850</x><y>20</y><width>320</width><height>24</height>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+
+  <widget type="rectangle" version="2.0.0">
+    <name>ConnectionBox</name>
+    <x>20</x><y>60</y><width>1160</width><height>65</height>
+    <line_width>2</line_width>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>ConnectionLabel</name><text>COMMUNICATION</text>
+    <x>35</x><y>70</y><width>170</width><height>22</height>
+    <font><font family="Liberation Sans" style="BOLD" size="15.0"/></font>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>ConnectedLED</name><pv_name>$(P)CONNECTED</pv_name>
+    <x>220</x><y>72</y><width>24</width><height>24</height>
+  </widget>
+  <widget type="label" version="2.0.0"><name>ConnectedText</name><text>Connected</text><x>250</x><y>75</y><width>90</width><height>18</height></widget>
+  <widget type="label" version="2.0.0"><name>CommCountLabel</name><text>Transactions</text><x>380</x><y>75</y><width>90</width><height>18</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>CommCount</name><pv_name>$(P)COMM:COUNT</pv_name><x>475</x><y>70</y><width>100</width><height>28</height><horizontal_alignment>1</horizontal_alignment></widget>
+  <widget type="label" version="2.0.0"><name>CommErrorLabel</name><text>Comm errors</text><x>620</x><y>75</y><width>80</width><height>18</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>CommErrors</name><pv_name>$(P)COMM:ERROR</pv_name><x>705</x><y>70</y><width>90</width><height>28</height><horizontal_alignment>1</horizontal_alignment></widget>
+  <widget type="label" version="2.0.0"><name>StatusLabel</name><text>Status</text><x>830</x><y>75</y><width>50</width><height>18</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Status</name><pv_name>$(P)STATUS</pv_name><x>885</x><y>70</y><width>270</width><height>28</height></widget>
+
+  <widget type="rectangle" version="2.0.0"><name>InstrumentBox</name><x>20</x><y>140</y><width>370</width><height>250</height><line_width>2</line_width></widget>
+  <widget type="label" version="2.0.0"><name>InstrumentTitle</name><text>INSTRUMENT</text><x>35</x><y>150</y><width>180</width><height>22</height><font><font family="Liberation Sans" style="BOLD" size="15.0"/></font></widget>
+  <widget type="label" version="2.0.0"><name>ModelL</name><text>Model</text><x>40</x><y>190</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Model</name><pv_name>$(P)MODEL</pv_name><x>155</x><y>185</y><width>215</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>VersionL</name><text>Version</text><x>40</x><y>225</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Version</name><pv_name>$(P)VERSION</pv_name><x>155</x><y>220</y><width>215</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>MassRangeL</name><text>Mass range</text><x>40</x><y>260</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>MassRange</name><pv_name>$(P)MASS:RANGE</pv_name><x>155</x><y>255</y><width>215</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>ModeL</name><text>Mode</text><x>40</x><y>295</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Mode</name><pv_name>$(P)MODE</pv_name><x>155</x><y>290</y><width>215</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>SpeedL</name><text>Speed</text><x>40</x><y>330</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Speed</name><pv_name>$(P)SPEED:SET</pv_name><x>155</x><y>325</y><width>215</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>RangeL</name><text>First / Last mass</text><x>40</x><y>365</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>FirstMass</name><pv_name>$(P)MASS:FIRST</pv_name><x>155</x><y>360</y><width>95</width><height>28</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>LastMass</name><pv_name>$(P)MASS:LAST</pv_name><x>255</x><y>360</y><width>115</width><height>28</height></widget>
+
+  <widget type="rectangle" version="2.0.0"><name>MeasurementBox</name><x>405</x><y>140</y><width>370</width><height>250</height><line_width>2</line_width></widget>
+  <widget type="label" version="2.0.0"><name>MeasurementTitle</name><text>MEASUREMENT</text><x>420</x><y>150</y><width>180</width><height>22</height><font><font family="Liberation Sans" style="BOLD" size="15.0"/></font></widget>
+  <widget type="label" version="2.0.0"><name>MeasuringL</name><text>Measuring</text><x>425</x><y>190</y><width>110</width><height>20</height></widget>
+  <widget type="led" version="2.0.0"><name>MeasuringLED</name><pv_name>$(P)MEASURING</pv_name><x>550</x><y>185</y><width>24</width><height>24</height></widget>
+  <widget type="label" version="2.0.0"><name>PressureL</name><text>Total pressure</text><x>425</x><y>230</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Pressure</name><pv_name>$(P)PRESSURE:TOTAL</pv_name><x>550</x><y>225</y><width>190</width><height>32</height><horizontal_alignment>1</horizontal_alignment></widget>
+  <widget type="label" version="2.0.0"><name>PressureStatusL</name><text>Pressure SP status</text><x>425</x><y>270</y><width>125</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>PressureStatus</name><pv_name>$(P)PRESSURE:SETPOINT:STATUS</pv_name><x>550</x><y>265</y><width>190</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>Analog1L</name><text>Analog input 1</text><x>425</x><y>310</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Analog1</name><pv_name>$(P)ANALOG:INPUT1</pv_name><x>550</x><y>305</y><width>190</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>Analog2L</name><text>Analog input 2</text><x>425</x><y>350</y><width>110</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Analog2</name><pv_name>$(P)ANALOG:INPUT2</pv_name><x>550</x><y>345</y><width>190</width><height>28</height></widget>
+
+  <widget type="rectangle" version="2.0.0"><name>SourceBox</name><x>790</x><y>140</y><width>390</width><height>250</height><line_width>2</line_width></widget>
+  <widget type="label" version="2.0.0"><name>SourceTitle</name><text>SOURCE / DETECTOR</text><x>805</x><y>150</y><width>220</width><height>22</height><font><font family="Liberation Sans" style="BOLD" size="15.0"/></font></widget>
+  <widget type="label" version="2.0.0"><name>FilamentL</name><text>Filament</text><x>810</x><y>195</y><width>120</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Filament</name><pv_name>$(P)FILAMENT</pv_name><x>940</x><y>190</y><width>210</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>DetectorL</name><text>Detector</text><x>810</x><y>235</y><width>120</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>Detector</name><pv_name>$(P)DETECTOR</pv_name><x>940</x><y>230</y><width>210</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>ErrorCodeL</name><text>Instrument error</text><x>810</x><y>275</y><width>120</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>ErrorCode</name><pv_name>$(P)ERROR:CODE</pv_name><x>940</x><y>270</y><width>210</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>RawErrorL</name><text>Raw error</text><x>810</x><y>315</y><width>120</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>RawError</name><pv_name>$(P)ERROR:RAW</pv_name><x>940</x><y>310</y><width>210</width><height>28</height></widget>
+  <widget type="label" version="2.0.0"><name>DriverErrorL</name><text>Driver error</text><x>810</x><y>355</y><width>120</width><height>20</height></widget>
+  <widget type="textupdate" version="2.0.0"><name>DriverError</name><pv_name>$(P)ERROR</pv_name><x>940</x><y>350</y><width>210</width><height>28</height></widget>
+
+  <widget type="label" version="2.0.0">
+    <name>SpectrumTitle</name><text>MASS SPECTRUM</text>
+    <x>25</x><y>415</y><width>250</width><height>24</height>
+    <font><font family="Liberation Sans" style="BOLD" size="17.0"/></font>
+  </widget>
+
+  <widget type="xyplot" version="3.0.0">
+    <name>SpectrumPlot</name>
+    <x>20</x><y>445</y><width>1160</width><height>350</height>
+    <title>MASS SPECTRUM</title>
+    <x_axis>
+      <title>Mass / m/z</title>
+      <auto_scale>true</auto_scale>
+      <show_grid>true</show_grid>
+    </x_axis>
+    <y_axes>
+      <axis>
+        <title>Partial pressure</title>
+        <log_scale>true</log_scale>
+        <auto_scale>true</auto_scale>
+        <show_grid>true</show_grid>
+      </axis>
+    </y_axes>
+    <traces>
+      <trace>
+        <name>Spectrum</name>
+        <x_pv>$(P)MASS:AXIS</x_pv>
+        <y_pv>$(P)SPECTRUM</y_pv>
+      </trace>
+    </traces>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Footer</name>
+    <text>V0.1 diagnostic display. Generic deployment using the P macro.</text>
+    <x>25</x><y>810</y><width>600</width><height>20</height>
+  </widget>
+</display>
